@@ -16,7 +16,7 @@ Ultra-low latency (~70ms for 10s audio). Emotion detection. Audio event detectio
 - Word-level timestamps (via `verbose_json`)
 - Non-autoregressive: ~70ms for 10s audio on GPU
 - CUDA 12.8 for RTX 5060 Ti / Blackwell GPUs
-- Model pre-downloaded in image (no first-run wait)
+- First start downloads model (~900MB), subsequent starts are instant
 
 ## Quick Start
 

@@ -18,11 +18,13 @@
 
   <Config Name="API Port" Target="10095" Default="10095" Mode="tcp" Description="REST API and WebSocket port. Swagger docs at /docs" Type="Port" Display="always" Required="true" Mask="false">10095</Config>
 
-  <Config Name="Model Cache" Target="/root/.cache/huggingface" Default="/mnt/user/appdata/sensevoice-api/models" Mode="rw" Description="Model cache directory. Models are pre-downloaded in image but this allows persistence across image updates." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sensevoice-api/models</Config>
+  <Config Name="Model Cache" Target="/root/.cache/huggingface" Default="/mnt/user/appdata/sensevoice-api/models" Mode="rw" Description="Model download cache (~900MB). First start downloads model here; subsequent starts are instant. Persists across container recreates." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sensevoice-api/models</Config>
 
   <Config Name="Device" Target="DEVICE" Default="cuda:0" Mode="" Description="Inference device. GPU: cuda:0 (recommended, ~70ms/10s audio), cuda:1 for second GPU. CPU: set to cpu (slower, but no GPU required — remove --gpus all from Extra Parameters)." Type="Variable" Display="always" Required="true" Mask="false">cuda:0</Config>
 
-  <Config Name="Model ID" Target="MODEL_ID" Default="FunAudioLLM/SenseVoiceSmall" Mode="" Description="FunASR model identifier from ModelScope" Type="Variable" Display="advanced" Required="true" Mask="false">FunAudioLLM/SenseVoiceSmall</Config>
+  <Config Name="Model ID" Target="MODEL_ID" Default="FunAudioLLM/SenseVoiceSmall" Mode="" Description="HuggingFace model identifier. Default model is pre-downloaded in image." Type="Variable" Display="advanced" Required="true" Mask="false">FunAudioLLM/SenseVoiceSmall</Config>
+
+  <Config Name="HuggingFace Endpoint" Target="HF_ENDPOINT" Default="https://huggingface.co" Mode="" Description="HuggingFace download endpoint. China users: change to https://hf-mirror.com for faster model downloads." Type="Variable" Display="always" Required="false" Mask="false">https://huggingface.co</Config>
 
   <Config Name="Batch Size" Target="BATCH_SIZE" Default="1" Mode="" Description="Inference batch size" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
 

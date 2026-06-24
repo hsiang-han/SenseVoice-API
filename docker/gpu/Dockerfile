@@ -19,11 +19,6 @@ RUN pip install --no-cache-dir torch torchaudio --index-url ${TORCH_INDEX}
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download model at build time to avoid first-run delay
-ARG DOWNLOAD_MODEL=true
-RUN if [ "$DOWNLOAD_MODEL" = "true" ]; then \
-        python -c "from funasr import AutoModel; AutoModel(model='FunAudioLLM/SenseVoiceSmall', hub='hf', trust_remote_code=True, disable_update=True, device='cpu')"; \
-    fi
 
 COPY api/ ./api/
 COPY docker/scripts/entrypoint.sh .
@@ -34,6 +29,7 @@ ENV DEVICE=cuda:0 \
     BATCH_SIZE=1 \
     PORT=10095 \
     HF_HOME=/root/.cache/huggingface \
+    HF_ENDPOINT=https://huggingface.co \
     PYTHONUNBUFFERED=1
 
 EXPOSE 10095

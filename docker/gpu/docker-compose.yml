@@ -6,8 +6,6 @@ services:
     build:
       context: ../..
       dockerfile: docker/gpu/Dockerfile
-      args:
-        DOWNLOAD_MODEL: "true"
     ports:
       - "10095:10095"
     volumes:
