@@ -23,7 +23,7 @@ Ultra-low latency (~70ms for 10s audio). Emotion detection. Audio event detectio
 ```bash
 docker run -d --gpus all \
   -p 10095:10095 \
-  -v /mnt/user/appdata/sensevoice-api/models:/root/.cache/modelscope/hub \
+  -v /mnt/user/appdata/sensevoice-api/models:/root/.cache/huggingface \
   --name sensevoice-api \
   ghcr.io/hsiang-han/sensevoice-api:latest
 ```
@@ -133,7 +133,7 @@ Add template repo: `https://github.com/hsiang-han/unraid_templates`
 Or manually install with:
 - Repository: `ghcr.io/hsiang-han/sensevoice-api:latest`
 - Extra Parameters: `--gpus all`
-- Model Cache path: `/mnt/user/appdata/sensevoice-api/models` → `/root/.cache/modelscope/hub`
+- Model Cache path: `/mnt/user/appdata/sensevoice-api/models` → `/root/.cache/huggingface`
 
 ## Hardware Requirements
 

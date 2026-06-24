@@ -18,7 +18,7 @@
 
   <Config Name="API Port" Target="10095" Default="10095" Mode="tcp" Description="REST API and WebSocket port. Swagger docs at /docs" Type="Port" Display="always" Required="true" Mask="false">10095</Config>
 
-  <Config Name="Model Cache" Target="/root/.cache/modelscope/hub" Default="/mnt/user/appdata/sensevoice-api/models" Mode="rw" Description="Model cache directory. Models are pre-downloaded in image but this allows persistence across image updates." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sensevoice-api/models</Config>
+  <Config Name="Model Cache" Target="/root/.cache/huggingface" Default="/mnt/user/appdata/sensevoice-api/models" Mode="rw" Description="Model cache directory. Models are pre-downloaded in image but this allows persistence across image updates." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/sensevoice-api/models</Config>
 
   <Config Name="Device" Target="DEVICE" Default="cuda:0" Mode="" Description="Inference device. GPU: cuda:0 (recommended, ~70ms/10s audio), cuda:1 for second GPU. CPU: set to cpu (slower, but no GPU required — remove --gpus all from Extra Parameters)." Type="Variable" Display="always" Required="true" Mask="false">cuda:0</Config>
 

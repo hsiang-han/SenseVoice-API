@@ -23,7 +23,7 @@
 ```bash
 docker run -d --gpus all \
   -p 10095:10095 \
-  -v /mnt/user/appdata/sensevoice-api/models:/root/.cache/modelscope/hub \
+  -v /mnt/user/appdata/sensevoice-api/models:/root/.cache/huggingface \
   --name sensevoice-api \
   ghcr.io/hsiang-han/sensevoice-api:latest
 ```
@@ -133,7 +133,7 @@ print(result.text)
 或手动安装：
 - Repository: `ghcr.io/hsiang-han/sensevoice-api:latest`
 - Extra Parameters: `--gpus all`
-- 模型缓存路径: `/mnt/user/appdata/sensevoice-api/models` → `/root/.cache/modelscope/hub`
+- 模型缓存路径: `/mnt/user/appdata/sensevoice-api/models` → `/root/.cache/huggingface`
 
 ## 硬件要求
 

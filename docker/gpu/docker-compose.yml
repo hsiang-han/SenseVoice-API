@@ -11,7 +11,7 @@ services:
     ports:
       - "10095:10095"
     volumes:
-      - /mnt/user/appdata/sensevoice-api/models:/root/.cache/modelscope/hub
+      - /mnt/user/appdata/sensevoice-api/models:/root/.cache/huggingface
     environment:
       - DEVICE=cuda:0
       - MODEL_ID=FunAudioLLM/SenseVoiceSmall

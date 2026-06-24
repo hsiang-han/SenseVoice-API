@@ -66,7 +66,9 @@ async def lifespan(app: FastAPI):
 
     _model = AutoModel(
         model=MODEL_ID,
+        hub="hf",
         trust_remote_code=True,
+        disable_update=True,
         device=DEVICE,
     )
     yield
