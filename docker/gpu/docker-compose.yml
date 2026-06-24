@@ -1,0 +1,27 @@
+name: sensevoice-api
+services:
+  sensevoice:
+    image: ghcr.io/hsiang-han/sensevoice-api:latest
+    container_name: sensevoice-api
+    build:
+      context: ../..
+      dockerfile: docker/gpu/Dockerfile
+      args:
+        DOWNLOAD_MODEL: "true"
+    ports:
+      - "10095:10095"
+    volumes:
+      - /mnt/user/appdata/sensevoice-api/models:/root/.cache/modelscope/hub
+    environment:
+      - DEVICE=cuda:0
+      - MODEL_ID=FunAudioLLM/SenseVoiceSmall
+      - BATCH_SIZE=1
+      - PORT=10095
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped

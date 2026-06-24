@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.git/
+.github/
+.gitignore
+.env
+.venv/
+venv/
+models/
+*.md
+templates/
+assets/

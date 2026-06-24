@@ -1,0 +1,8 @@
+funasr>=1.1.0
+modelscope
+fastapi
+uvicorn[standard]
+python-multipart
+soundfile
+numpy
+onnxruntime-gpu
