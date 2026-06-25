@@ -4,7 +4,7 @@
 
 基于 [SenseVoice-Small](https://github.com/FunAudioLLM/SenseVoice)（阿里 FunAudioLLM）的 OpenAI 兼容语音转文本 API。
 
-超低延迟（10秒音频 ~70ms）。情感识别。音频事件检测。语种识别。字级时间戳。一键部署。
+超低延迟（10秒音频 ~70ms）。情感识别。音频事件检测。语种识别。说话人识别。字级时间戳。一键部署。
 
 ## 特性
 
@@ -13,6 +13,7 @@
 - **情感检测**（开心、伤心、愤怒、中性）
 - **音频事件检测**（语音、音乐、掌声、笑声、背景音乐等）
 - **语种自动识别**（中文、英文、日文、韩文、粤语）
+- **说话人识别** — 区分不同说话人（通过 `cam++` 模型，可选开启）
 - 字级时间戳（通过 `verbose_json`）
 - 非自回归架构：GPU 上 10 秒音频仅需 ~70ms
 - CUDA 12.8 支持 RTX 5060 Ti / Blackwell GPU
@@ -68,6 +69,23 @@ curl -X POST http://localhost:10095/v1/audio/transcriptions \
 }
 ```
 
+**含说话人识别 (ENABLE_SPK=true):**
+```json
+{
+  "task": "transcribe",
+  "language": "zh",
+  "duration": 12.4,
+  "text": "今天开会讨论一下项目进展。好的没问题。",
+  "emotion": "neutral",
+  "event": "Speech",
+  "processing_time": 0.183,
+  "segments": [
+    {"start": 0.24, "end": 4.10, "text": "今天开会讨论一下项目进展。", "speaker": "spk1", "emotion": "neutral"},
+    {"start": 4.85, "end": 7.30, "text": "好的没问题。", "speaker": "spk2", "emotion": "happy"}
+  ]
+}
+```
+
 ### WebSocket 流式识别
 
 ```python
@@ -115,6 +133,7 @@ print(result.text)
 | 音频事件检测 | Speech, Music, Applause, Laughter, BGM, Cry, Cough, Sneeze, Breath | `verbose_json` → `event` 字段 |
 | 语种识别 | zh, en, ja, ko, yue（自动检测） | `verbose_json` → `language` 字段 |
 | 字级时间戳 | 每个词的强制对齐时间戳 | `verbose_json` → `words` 数组 |
+| 说话人识别 | 区分不同说话人（需开启 `ENABLE_SPK=true`） | `verbose_json` → `segments[].speaker` 字段 |
 | 多语种混合 | 支持语种之间的代码切换 | 自动 |
 
 ## 环境变量
@@ -122,9 +141,11 @@ print(result.text)
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
 | `DEVICE` | `cuda:0` | 计算设备 (cuda:0, cuda:1, cpu) |
-| `MODEL_ID` | `FunAudioLLM/SenseVoiceSmall` | ModelScope 模型 ID |
+| `MODEL_ID` | `FunAudioLLM/SenseVoiceSmall` | HuggingFace 模型 ID |
+| `ENABLE_SPK` | `false` | 开启说话人识别（通过 `cam++` 模型，首次启动额外下载 ~7MB） |
 | `BATCH_SIZE` | `1` | 推理批大小 |
 | `PORT` | `10095` | 服务端口 |
+| `HF_ENDPOINT` | `https://huggingface.co` | HuggingFace 镜像地址（国内用户改为 `https://hf-mirror.com`） |
 
 ## Unraid 安装
 

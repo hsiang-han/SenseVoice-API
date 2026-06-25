@@ -13,6 +13,7 @@ Ultra-low latency (~70ms for 10s audio). Emotion detection. Audio event detectio
 - **Emotion detection** (happy, sad, angry, neutral)
 - **Audio event detection** (Speech, Music, Applause, Laughter, BGM, etc.)
 - **Auto language identification** (zh, en, ja, ko, yue)
+- **Speaker diarization** — identify who is speaking (via `cam++` model, opt-in)
 - Word-level timestamps (via `verbose_json`)
 - Non-autoregressive: ~70ms for 10s audio on GPU
 - CUDA 12.8 for RTX 5060 Ti / Blackwell GPUs
@@ -68,6 +69,23 @@ curl -X POST http://localhost:10095/v1/audio/transcriptions \
 }
 ```
 
+**Verbose with speaker diarization (ENABLE_SPK=true):**
+```json
+{
+  "task": "transcribe",
+  "language": "zh",
+  "duration": 12.4,
+  "text": "今天开会讨论一下项目进展。好的没问题。",
+  "emotion": "neutral",
+  "event": "Speech",
+  "processing_time": 0.183,
+  "segments": [
+    {"start": 0.24, "end": 4.10, "text": "今天开会讨论一下项目进展。", "speaker": "spk1", "emotion": "neutral"},
+    {"start": 4.85, "end": 7.30, "text": "好的没问题。", "speaker": "spk2", "emotion": "happy"}
+  ]
+}
+```
+
 ### WebSocket Streaming
 
 ```python
@@ -115,6 +133,7 @@ print(result.text)
 | Audio event detection | Speech, Music, Applause, Laughter, BGM, Cry, Cough, Sneeze, Breath | `verbose_json` → `event` field |
 | Language identification | zh, en, ja, ko, yue (auto-detected) | `verbose_json` → `language` field |
 | Word-level timestamps | Forced-alignment timestamps per word | `verbose_json` → `words` array |
+| Speaker diarization | Identify who is speaking (requires `ENABLE_SPK=true`) | `verbose_json` → `segments[].speaker` field |
 | Mixed-language | Code-switching between supported languages | Automatic |
 
 ## Environment Variables
@@ -122,9 +141,11 @@ print(result.text)
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `DEVICE` | `cuda:0` | Compute device (cuda:0, cuda:1, cpu) |
-| `MODEL_ID` | `FunAudioLLM/SenseVoiceSmall` | ModelScope model ID |
+| `MODEL_ID` | `FunAudioLLM/SenseVoiceSmall` | HuggingFace model ID |
+| `ENABLE_SPK` | `false` | Enable speaker diarization via `cam++` model (~7MB extra download) |
 | `BATCH_SIZE` | `1` | Inference batch size |
 | `PORT` | `10095` | Server port |
+| `HF_ENDPOINT` | `https://huggingface.co` | HuggingFace mirror (China: `https://hf-mirror.com`) |
 
 ## Unraid
 
