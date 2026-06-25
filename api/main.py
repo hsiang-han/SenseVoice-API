@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse
 MODEL_ID = os.getenv("MODEL_ID", "FunAudioLLM/SenseVoiceSmall")
 DEVICE = os.getenv("DEVICE", "cuda:0")
 BATCH_SIZE = int(os.getenv("BATCH_SIZE", "1"))
+ENABLE_SPK = os.getenv("ENABLE_SPK", "false").lower() == "true"
 
 _model = None
 _model_lock = threading.Lock()
@@ -64,13 +65,17 @@ async def lifespan(app: FastAPI):
     global _model
     from funasr import AutoModel
 
-    _model = AutoModel(
-        model=MODEL_ID,
-        hub="hf",
-        trust_remote_code=True,
-        disable_update=True,
-        device=DEVICE,
-    )
+    kwargs = {
+        "model": MODEL_ID,
+        "hub": "hf",
+        "trust_remote_code": True,
+        "disable_update": True,
+        "device": DEVICE,
+    }
+    if ENABLE_SPK:
+        kwargs["spk_model"] = "funasr/cam++"
+
+    _model = AutoModel(**kwargs)
     yield
     _model = None
 
@@ -85,6 +90,7 @@ async def health():
         "model": MODEL_ID,
         "device": DEVICE,
         "features": ["emotion", "event", "language_detection", "timestamps", "itn"],
+        "spk": ENABLE_SPK,
     }
 
 
@@ -168,10 +174,15 @@ async def transcribe(
             "processing_time": round(elapsed, 3),
         }
 
-        # Word-level timestamps if available
-        segments = _extract_timestamps(result)
-        if segments:
-            response["words"] = segments
+        # Speaker diarization segments (cam++ model)
+        speaker_segments = _extract_speaker_segments(result)
+        if speaker_segments:
+            response["segments"] = speaker_segments
+        else:
+            # Word-level timestamps if no speaker info
+            segments = _extract_timestamps(result)
+            if segments:
+                response["words"] = segments
 
         return JSONResponse(content=response)
 
@@ -240,6 +251,31 @@ def _extract_raw(result) -> str:
         if hasattr(item, "text"):
             return item.text
     return str(result)
+
+
+def _extract_speaker_segments(result) -> list:
+    """Extract speaker diarization segments from cam++ sentence_info."""
+    if not result or not isinstance(result, list) or len(result) == 0:
+        return []
+    item = result[0]
+    if not isinstance(item, dict):
+        return []
+    sentence_info = item.get("sentence_info", [])
+    if not sentence_info:
+        return []
+    segments = []
+    for info in sentence_info:
+        if isinstance(info, dict):
+            raw = info.get("text", "")
+            parsed = _parse_rich_text(raw)
+            segments.append({
+                "start": round(info.get("start", 0) / 1000.0, 3),
+                "end": round(info.get("end", 0) / 1000.0, 3),
+                "text": parsed["text"],
+                "speaker": info.get("spk", None),
+                "emotion": parsed["emotion"],
+            })
+    return segments
 
 
 def _extract_timestamps(result) -> list:

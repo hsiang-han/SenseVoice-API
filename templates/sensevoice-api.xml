@@ -26,6 +26,8 @@
 
   <Config Name="HuggingFace Endpoint" Target="HF_ENDPOINT" Default="https://huggingface.co" Mode="" Description="HuggingFace download endpoint. China users: change to https://hf-mirror.com for faster model downloads." Type="Variable" Display="always" Required="false" Mask="false">https://huggingface.co</Config>
 
+  <Config Name="Enable Speaker Diarization" Target="ENABLE_SPK" Default="false" Mode="" Description="Identify who is speaking using cam++ model. Adds ~7MB speaker model download on first start. Results appear in verbose_json format as 'segments' with 'speaker' field." Type="Variable" Display="always" Required="false" Mask="false">false</Config>
+
   <Config Name="Batch Size" Target="BATCH_SIZE" Default="1" Mode="" Description="Inference batch size" Type="Variable" Display="advanced" Required="false" Mask="false">1</Config>
 
   <Config Name="Port" Target="PORT" Default="10095" Mode="" Description="Internal API server port" Type="Variable" Display="advanced" Required="false" Mask="false">10095</Config>
